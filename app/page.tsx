@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
 
 type Pokemon = { name: string; url: string };
@@ -9,7 +8,7 @@ type Props = {
 	searchParams: Promise<{ q?: string; limit?: string }>;
 };
 
-// Solution 1 (client version): fetch in the browser with useEffect
+// Solution 1: Convert to server component
 export default function Page({ searchParams }: Props) {
 	const params = use(searchParams);
 	const { q, limit = "20" } = params;
@@ -31,7 +30,7 @@ export default function Page({ searchParams }: Props) {
 			.finally(() => setLoading(false));
 	}, []);
 
-	if (loading) return <p>Loading…</p>;
+	if (loading) return <p>Loading...</p>;
 	if (error) return <p className="text-error">{error}</p>;
 
 	const matches = data.filter((p) => p.name.includes(query));
