@@ -1,61 +1,85 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
-
-type Pokemon = { name: string; url: string };
+import { Bookmark, Star } from "lucide-react";
+import { useEffect, useState } from "react";
 
 type Props = {
 	searchParams: Promise<{ q?: string; limit?: string }>;
 };
 
-// Solution 1: Convert to server component
+// Exercise 1: Convert client-side to server-side
+// Use https://dummyjson.com/docs/recipes#recipes-all for the list of all recipes.
 export default function Page({ searchParams }: Props) {
-	const params = use(searchParams);
-	const { q, limit = "20" } = params;
-	const query = q?.trim().toLowerCase() ?? "";
+	console.log(searchParams);
 
-	const [data, setData] = useState<Pokemon[]>([]);
+	// Question: Why is this not optimal?
+	// Use the local package.json generated types script.
+	const [recipes, setRecipes] = useState<any>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
-	// Fetch the full list once when the page mounts.
+	// Question: Why is this not optimal?
 	useEffect(() => {
-		fetch("https://pokeapi.co/api/v2/pokemon?limit=2000")
+		fetch("https://dummyjson.com/recipes/search")
 			.then((res) => {
-				if (!res.ok) throw new Error("Failed to fetch Pokémon");
+				if (!res.ok) throw new Error("Failed to fetch recipes");
 				return res.json();
 			})
-			.then((json) => setData(json.results))
+			.then((json) => setRecipes(json.recipes))
 			.catch((err) => setError(err.message))
 			.finally(() => setLoading(false));
 	}, []);
 
+	// Exercise 2: Handle loading with suspense boundary
 	if (loading) return <p>Loading...</p>;
+	// Exercise 2: Handle errors with error boundary
 	if (error) return <p className="text-error">{error}</p>;
 
-	const matches = data.filter((p) => p.name.includes(query));
-	const results = matches.slice(0, Number(limit));
-
-	if (results.length === 0) {
-		return <p className="opacity-70">No Pokémon match “{q}”.</p>;
-	}
-
+	// Exercise 4: Displaying individual recipe detail
+	// Use https://dummyjson.com/docs/recipes#recipes-single to open a single recipe page.
 	return (
 		<section className="space-y-4">
-			<p className="text-sm opacity-70">
-				Showing {results.length} of {matches.length}
-			</p>
-			<ul className="grid grid-cols-2 gap-4 md:grid-cols-4">
-				{results.map((p) => {
-					const id = p.url.split("/").filter(Boolean).pop();
-					return (
-						<li key={p.name}>
-							<div className="card cursor-pointer bg-base-100 p-4 capitalize hover:shadow-md">
-								#{id} {p.name}
+			{/* <p className="text-sm opacity-70 px-1">
+				Showing {recipes.length} of {total}
+			</p> */}
+
+			{/* Question: Can we make this responsive? */}
+			<ul className="grid grid-cols-1 gap-4">
+				{recipes.map((r) => (
+					<li key={r.id}>
+						<a className="card h-full bg-base-100 hover:shadow-xs ring-1 ring-inset ring-base-content/10 overflow-hidden">
+							<div className="flex items-center justify-between gap-2 p-2">
+								<div className="flex flex-col justify-between size-full">
+									<div className="flex flex-col gap-0">
+										<h2 className="card-title text-sm">{r.name}</h2>
+										<p className="text-xs opacity-70">
+											Difficulty: {r.difficulty}
+										</p>
+									</div>
+									<div className="flex items-center gap-2 text-xs">
+										<span className="badge badge-primary badge-ghost text-xs badge-sm rounded-md gap-1 px-2">
+											<Star className="w-3 h-3" />
+											<span>{r.rating}</span>
+										</span>
+										<span className="badge badge-primary badge-ghost text-xs badge-sm rounded-md gap-1 px-2">
+											<Bookmark className="w-3 h-3" />
+											<span>{r.reviewCount}</span>
+										</span>
+									</div>
+								</div>
+
+								{/* Question: Why is this not optimal? */}
+								<img
+									src={r.image}
+									alt={r.name}
+									width={200}
+									height={200}
+									className="aspect-square object-cover size-20 rounded-md"
+								/>
 							</div>
-						</li>
-					);
-				})}
+						</a>
+					</li>
+				))}
 			</ul>
 		</section>
 	);

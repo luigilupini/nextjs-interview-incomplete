@@ -1,5 +1,5 @@
 {
-	"name": "nextjs",
+	"name": "nextjs-interview-template",
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
@@ -7,12 +7,17 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "eslint .",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"generate-types": "npx -y quicktype \"https://dummyjson.com/recipes?limit=0\" --lang ts --just-types --top-level RecipeListResponse -o lib/types/recipe.ts",
+		"generate-schemas": "mkdir -p lib/schemas && npx -y quicktype \"https://dummyjson.com/recipes?limit=0\" --lang typescript-zod --top-level RecipeListResponse -o lib/schemas/recipe.ts"
 	},
 	"dependencies": {
+		"lucide-react": "^1.60.0",
 		"next": "^15.5.27",
+		"next-themes": "^0.4.6",
 		"react": "^19.3.0",
-		"react-dom": "^19.3.0"
+		"react-dom": "^19.3.0",
+		"zod": "^4.6.7"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3.3.7",

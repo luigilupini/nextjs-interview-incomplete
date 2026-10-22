@@ -1,13 +1,14 @@
 "use client";
 
+// Exercise 3: Setup search filters
+// Use https://dummyjson.com/docs/recipes#recipes-search the API results.
 export function SearchInput({ defaultValue }: { defaultValue: string }) {
 	return (
 		<input
 			type="search"
-			name="q"
-			value={defaultValue}
-			placeholder="Search Pokémon..."
-			className="input input-bordered w-full max-w-xs"
+			defaultValue={defaultValue}
+			placeholder="Search here"
+			className="input input-bordered max-w-xs"
 		/>
 	);
 }
