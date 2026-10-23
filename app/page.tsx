@@ -45,8 +45,9 @@ export default function Page({ searchParams }: Props) {
 
 			{/* Question: Can we make this responsive? */}
 			<ul className="grid grid-cols-1 gap-4">
-				{recipes.map((r) => (
-					<li key={r.id}>
+				{/* Question: Why is this not optimal? */}
+				{recipes.map((r, i) => (
+					<li key={i}>
 						<a className="card h-full bg-base-100 hover:shadow-xs ring-1 ring-inset ring-base-content/10 overflow-hidden">
 							<div className="flex items-center justify-between gap-2 p-2">
 								<div className="flex flex-col justify-between size-full">
